@@ -8,9 +8,9 @@
 
     <TextView
         android:id="@+id/text_players_turn"
-        style="@style/TextAppearance.Material3.HeadlineSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
         app:layout_constraintBottom_toTopOf="@id/text_quiz"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,16 +20,16 @@
 
     <TextView
         android:id="@+id/text_quiz"
-        style="@style/TextAppearance.Material3.DisplayLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.Material3.DisplayLarge"
         app:layout_constraintBottom_toTopOf="@id/text_input_layout_answer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_players_turn"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="25 + 19" />
+        tools:text="25 + 9" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_answer"

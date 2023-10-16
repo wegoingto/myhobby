@@ -28,7 +28,7 @@ class ResultFragment : Fragment() {
 
         view.findViewById<Button>(R.id.button_back).setOnClickListener {
             Navigation.findNavController(view).navigate(
-                ResultFragmentDirections.actionRestartMainFragment()
+                ResultFragmentDirections.actionMainFragment()
             )
         }
     }
