@@ -1,14 +1,28 @@
 package com.example.myhobby.viewmodel
 
-import android.content.Context
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.myhobby.DummyData
+import com.example.myhobby.data.RoomDatabase
 import com.example.myhobby.model.Article
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
+
+    private val job = Job()
+    private val db = RoomDatabase.buildDatabase(getApplication())
+    val historyReadingArticle = MutableLiveData<List<Article>>()
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
 
     fun getAllNewsArticle(): List<Article> {
         val gson = Gson()
@@ -16,28 +30,16 @@ class HomeViewModel : ViewModel() {
         return gson.fromJson(DummyData.dummyNews, type)
     }
 
-    fun saveArticle(context: Context, article: Article): Boolean {
-        val savedArticle = getAllHistoryReadingArticle(context).toMutableList()
-        savedArticle.add(article)
-        val gson = Gson()
-        val sharedPref = context.getSharedPreferences("MyHobbyApp", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("historyReading", gson.toJson(savedArticle))
-            apply()
-        }
-        return true
-    }
-
-    fun getAllHistoryReadingArticle(context: Context): List<Article> {
-        val type = object : TypeToken<List<Article>>() {}.type
-        val sharedPref = context.getSharedPreferences("MyHobbyApp", Context.MODE_PRIVATE)
-        val historyReadingJson = sharedPref.getString("historyReading", null)
-        return if (historyReadingJson != null) {
-            val gson = Gson()
-            gson.fromJson(historyReadingJson, type)
-        } else {
-            emptyList()
+    fun saveArticle(article: Article) {
+        launch {
+            db.roomDao().saveHistoryReadingArticle(article)
         }
     }
 
+    fun getAllHistoryReadingArticle() {
+        launch {
+            val data = db.roomDao().getAllHistoryReadingArticle()
+            historyReadingArticle.postValue(data)
+        }
+    }
 }

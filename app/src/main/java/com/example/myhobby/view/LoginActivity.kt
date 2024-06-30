@@ -7,9 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.example.myhobby.view.MainActivity
 import com.example.myhobby.R
 import com.example.myhobby.databinding.ActivityLoginBinding
+import com.example.myhobby.model.User
 import com.example.myhobby.viewmodel.AuthViewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -20,47 +23,59 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
-
-        if (viewModel.isLoggedIn(this@LoginActivity)) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        } else {
-            setContentView(binding.root)
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                insets
+        viewModel.isLoggedIn()
+        viewModel.isUserHasLoggedIn.observe(this) {
+            if (it) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                setContentView(binding.root)
+                ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    v.setPadding(
+                        systemBars.left,
+                        systemBars.top,
+                        systemBars.right,
+                        systemBars.bottom
+                    )
+                    insets
+                }
             }
         }
 
+        val user = User("", "", "", false, "", "")
+        binding.user = user
+
         binding.btnLogin.setOnClickListener {
-            val username = binding.etUsername.text.toString()
-            val password = binding.etPassword.text.toString()
             when {
-                username.isEmpty() -> {
+                user.username.isEmpty() -> {
                     binding.etUsername.error = "Username is required"
                     binding.etUsername.requestFocus()
                 }
 
-                password.isEmpty() -> {
+                user.password.isEmpty() -> {
                     binding.etPassword.error = "Password is required"
                     binding.etPassword.requestFocus()
                 }
 
                 else -> {
-                    if (viewModel.login(this@LoginActivity, username, password)) {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    } else {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Username/password is wrong!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    viewModel.login(user.username, user.password)
                 }
+            }
+        }
+
+        viewModel.login.observe(this) {
+            if (it) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Username/password is wrong!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 

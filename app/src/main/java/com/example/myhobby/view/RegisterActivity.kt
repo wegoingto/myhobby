@@ -7,9 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.myhobby.R
 import com.example.myhobby.databinding.ActivityRegisterBinding
+import com.example.myhobby.model.User
 import com.example.myhobby.viewmodel.AuthViewModel
 
 class RegisterActivity : AppCompatActivity() {
@@ -20,7 +22,7 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_register)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -29,69 +31,55 @@ class RegisterActivity : AppCompatActivity() {
             insets
         }
 
+        val user = User("", "", "", false, "", "")
+        binding.user = user
+
+
         binding.btnRegister.setOnClickListener {
-            val username = binding.etUsername.text.toString()
-            val firstName = binding.etFirstName.text.toString()
-            val lastName = binding.etLastName.text.toString()
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
-            val confirmPassword = binding.etConfirmPassword.text.toString()
             when {
-                username.isEmpty() -> {
+                user.username.isEmpty() -> {
                     binding.etUsername.error = "Username is required"
                     binding.etUsername.requestFocus()
                 }
 
-                firstName.isEmpty() -> {
+                user.firstName.isEmpty() -> {
                     binding.etFirstName.error = "First Name is required"
                     binding.etFirstName.requestFocus()
                 }
 
-                lastName.isEmpty() -> {
+                user.lastName.isEmpty() -> {
                     binding.etLastName.error = "Last Name is required"
                     binding.etLastName.requestFocus()
                 }
 
-                email.isEmpty() -> {
+                user.email.isEmpty() -> {
                     binding.etEmail.error = "Email is required"
                     binding.etEmail.requestFocus()
                 }
 
-                password.isEmpty() -> {
+                user.password.isEmpty() -> {
                     binding.etPassword.error = "Password is required"
                     binding.etPassword.requestFocus()
                 }
 
-                confirmPassword.isEmpty() -> {
-                    binding.etConfirmPassword.error = "Confirm Password is required"
-                    binding.etConfirmPassword.requestFocus()
-                }
-
-                password != confirmPassword -> {
-                    binding.etConfirmPassword.error =
-                        "Password and Confirm Password must be the same"
-                    binding.etConfirmPassword.requestFocus()
-                }
-
                 else -> {
-                    if (viewModel.register(
-                            this@RegisterActivity,
-                            username,
-                            email,
-                            password,
-                            firstName,
-                            lastName
-                        )
-                    ) {
-                        Toast.makeText(
-                            this@RegisterActivity,
-                            "Register is successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(Intent(this, LoginActivity::class.java))
-                        finish()
-                    }
+                    viewModel.register(user)
                 }
+            }
+        }
+
+        viewModel.register.observe(this) {
+            if (it != -1L) {
+                Toast.makeText(
+                    this@RegisterActivity,
+                    "Register is successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this@RegisterActivity, "Something went wrong!", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 

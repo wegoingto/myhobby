@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myhobby.ArticleListener
 import com.example.myhobby.R
 import com.example.myhobby.databinding.FragmentHomeBinding
+import com.example.myhobby.model.Article
 import com.example.myhobby.viewmodel.HomeViewModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ArticleListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -31,14 +33,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        adapter = ArticleAdapter(homeViewModel.getAllNewsArticle()) {
-            homeViewModel.saveArticle(requireContext(), it)
-            val bundle = Bundle().apply {
-                putParcelable("article", it)
-            }
-            view.findNavController()
-                .navigate(R.id.action_homeFragment_to_detailNewsFragment, bundle)
-        }
+        adapter = ArticleAdapter(homeViewModel.getAllNewsArticle(), this)
         binding.rvNews.adapter = adapter
         binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
     }
@@ -46,6 +41,15 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onArticleClicked(article: Article) {
+        homeViewModel.saveArticle(article)
+        val bundle = Bundle().apply {
+            putParcelable("article", article)
+        }
+        view?.findNavController()
+            ?.navigate(R.id.action_homeFragment_to_detailNewsFragment, bundle)
     }
 
 }

@@ -1,19 +1,22 @@
 package com.example.myhobby.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myhobby.ArticleListener
 import com.example.myhobby.R
 import com.example.myhobby.databinding.FragmentHistoryBinding
+import com.example.myhobby.view.ArticleAdapter
 import com.example.myhobby.viewmodel.HomeViewModel
+import com.example.myhobby.model.Article
 
-class HistoryFragment : Fragment() {
+class HistoryFragment : Fragment(), ArticleListener {
 
     private var _binding: FragmentHistoryBinding? = null
     private val binding get() = _binding!!
@@ -32,22 +35,26 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        val historyArticle = homeViewModel.getAllHistoryReadingArticle(requireContext())
-        binding.tvEmpty.isVisible = historyArticle.isEmpty()
-        adapter = ArticleAdapter(historyArticle) {
-            val bundle = Bundle().apply {
-                putParcelable("article", it)
-            }
-            view.findNavController()
-                .navigate(R.id.action_historyFragment_to_detailNewsFragment, bundle)
+        homeViewModel.getAllHistoryReadingArticle()
+        homeViewModel.historyReadingArticle.observe(viewLifecycleOwner) { historyArticle ->
+            binding.tvEmpty.isVisible = historyArticle.isEmpty()
+            adapter = ArticleAdapter(historyArticle, this)
+            binding.rvNews.adapter = adapter
+            binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
         }
-        binding.rvNews.adapter = adapter
-        binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onArticleClicked(article: Article) {
+        val bundle = Bundle().apply {
+            putParcelable("article", article)
+        }
+        view?.findNavController()
+            ?.navigate(R.id.action_historyFragment_to_detailNewsFragment, bundle)
     }
 
 }

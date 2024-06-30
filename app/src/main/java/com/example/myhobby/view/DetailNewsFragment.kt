@@ -32,8 +32,7 @@ class DetailNewsFragment : Fragment() {
         val article = arguments?.getParcelable<Article>("article")
         val content = splitContent(article?.content.orEmpty())
 
-        binding.tvTitle.text = article?.title
-        binding.tvWriter.text = article?.writer
+        binding.article = article
         Glide.with(binding.root.context)
             .load(article?.imageUrl)
             .into(binding.ivNews)
@@ -92,7 +91,6 @@ class DetailNewsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-
     }
 
 }

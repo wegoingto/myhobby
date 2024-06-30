@@ -4,24 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.myhobby.ArticleListener
 import com.example.myhobby.model.Article
 import com.example.myhobby.databinding.ItemNewsBinding
 
-class ArticleAdapter(private val articles: List<Article>, private val listener: (Article) -> Unit) :
+class ArticleAdapter(private val articles: List<Article>, private val listener: ArticleListener) :
     RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
 
     inner class ArticleViewHolder(private val binding: ItemNewsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(article: Article) {
-            binding.tvTitle.text = article.title
-            binding.tvShortContent.text = article.shortContent
-            binding.tvWriter.text = article.writer
+            binding.article = article
+            binding.listener = listener
             Glide.with(binding.root.context)
                 .load(article.imageUrl)
                 .into(binding.ivNews)
-            binding.btnRead.setOnClickListener {
-                listener.invoke(article)
-            }
+
         }
     }
 

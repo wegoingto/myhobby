@@ -1,57 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+        <variable
+            name="article"
+            type="com.example.myhobby.model.Article" />
+
+        <variable
+            name="listener"
+            type="com.example.myhobby.ArticleListener" />
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_margin="8dp"
+        app:cardCornerRadius="8dp">
 
-        <ImageView
-            android:id="@+id/iv_news"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            tools:text="Title News"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:orientation="vertical"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tv_writer"
-            tools:text="\@Zamzami"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="14sp" />
+            <ImageView
+                android:id="@+id/iv_news"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/tv_short_content"
-            tools:text="Content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tv_title"
+                tools:text="Title News"
+                android:text="@{article.title}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btn_read"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="8dp"
-            android:text="Read" />
+            <TextView
+                android:id="@+id/tv_writer"
+                tools:text="\@Zamzami"
+                android:text="@{article.writer}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_short_content"
+                tools:text="Content"
+                android:text="@{article.shortContent}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:textSize="12sp" />
 
-</androidx.cardview.widget.CardView>
+            <Button
+                android:id="@+id/btn_read"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:onClick="@{() -> listener.onArticleClicked(article)}"
+                android:text="Read" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
