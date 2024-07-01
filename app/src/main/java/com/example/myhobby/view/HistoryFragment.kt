@@ -19,7 +19,7 @@ import com.example.myhobby.model.Article
 class HistoryFragment : Fragment(), ArticleListener {
 
     private var _binding: FragmentHistoryBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding!! //memastikan binding tidak null sblum dgunakan
     private lateinit var adapter: ArticleAdapter
     private lateinit var homeViewModel: HomeViewModel
 
@@ -40,7 +40,7 @@ class HistoryFragment : Fragment(), ArticleListener {
             binding.tvEmpty.isVisible = historyArticle.isEmpty()
             adapter = ArticleAdapter(historyArticle, this)
             binding.rvNews.adapter = adapter
-            binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
+            binding.rvNews.layoutManager = LinearLayoutManager(requireContext())//menampilkan artikel di rv dengan linear
         }
     }
 

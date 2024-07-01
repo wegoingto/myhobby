@@ -37,14 +37,14 @@ class DetailNewsFragment : Fragment() {
             .load(article?.imageUrl)
             .into(binding.ivNews)
 
-        binding.tvContent.text = content[currentPage]
+        binding.tvContent.text = content[currentPage] //ngatur teks ke array
 
         binding.btnNext.setOnClickListener {
-            if (currentPage < content.size - 1) {
+            if (currentPage < content.size - 1) {//bkn last
                 currentPage++
-                binding.tvContent.text = content[currentPage]
+                binding.tvContent.text = content[currentPage] //ngatur teks untuk hal baru
             }
-            if (currentPage != 0) {
+            if (currentPage != 0) {//bukn 1
                 binding.btnPrev.apply {
                     val colorStateList = ColorStateList.valueOf(Color.parseColor("#800080"))
                     this.backgroundTintList = colorStateList
@@ -56,7 +56,7 @@ class DetailNewsFragment : Fragment() {
             (it as? Button)?.setTextColor(if (currentPage == content.size - 1) Color.BLACK else Color.WHITE)
         }
         binding.btnPrev.setOnClickListener {
-            if (currentPage > 0) {
+            if (currentPage > 0) {// bkn 1
                 currentPage--
                 binding.tvContent.text = content[currentPage]
             }
@@ -81,7 +81,7 @@ class DetailNewsFragment : Fragment() {
 
         var index = 0
         while (index < content.length) {
-            chunks.add(content.substring(index, (index + chunkSize).coerceAtMost(content.length)))
+            chunks.add(content.substring(index, (index + chunkSize).coerceAtMost(content.length)))//tdk lbih content leght
             index += chunkSize
         }
 

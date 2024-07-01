@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
         viewModel.isLoggedIn()
-        viewModel.isUserHasLoggedIn.observe(this) {
+        viewModel.isUserHasLoggedIn.observe(this) { //lakukan cek
             if (it) {
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
         val user = User("", "", "", false, "", "")
         binding.user = user
 
-        binding.btnLogin.setOnClickListener {
+        binding.btnLogin.setOnClickListener { //handle proses login
             when {
                 user.username.isEmpty() -> {
                     binding.etUsername.error = "Username is required"
@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.login.observe(this) {
+        viewModel.login.observe(this) {//observe proses login
             if (it) {
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()

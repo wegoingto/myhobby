@@ -31,7 +31,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
         viewModel.getUserLogin()
-        viewModel.userLogin.observe(viewLifecycleOwner) { userInfo ->
+        viewModel.userLogin.observe(viewLifecycleOwner) { userInfo -> //osbserve dan update ino user stlh login
             binding.user = userInfo
             binding.btnSave.setOnClickListener {
                 val password = binding.etPassword.text.toString()

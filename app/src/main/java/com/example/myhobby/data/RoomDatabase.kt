@@ -14,7 +14,7 @@ abstract class RoomDatabase : RoomDatabase() {
     abstract fun roomDao(): RoomDao
 
     companion object {
-        @Volatile
+
         private var instance: com.example.myhobby.data.RoomDatabase? = null
         private val LOCK = Any()
         fun buildDatabase(context: Context) =
